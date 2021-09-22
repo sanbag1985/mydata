@@ -15,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,12 +39,13 @@ public class MyDataResource {
 	@Autowired
 	MyDataRequestValidator validator;
 
-	@GetMapping(value = "/{timestamp}/{key}/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<?> getMyData(@PathVariable("timestamp") Long timestamp, @PathVariable("key") String key,
+	@GetMapping(value = "/{start-timestamp}/{end-timestamp}/{key}/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<?> getMyData(@PathVariable("start-timestamp") Long startTimestamp,
+			@PathVariable("end-timestamp") Long endTimestamp, @PathVariable("key") String key,
 			@PathVariable("value") String value, @RequestParam(defaultValue = "0") int page) {
 		try {
 			Pageable pageable = PageRequest.of(page, MyDataConstants.PAGE_SIZE);
-			Page<MyData> data = myDataService.getMyData(timestamp, key, value, pageable);
+			Page<MyData> data = myDataService.getMyData(startTimestamp, endTimestamp, key, value, pageable);
 
 			if (CollectionUtils.isEmpty(data.getContent())) {
 				throw new DocumentNotFoundException(MyDataConstants.NOT_FOUND);
@@ -74,26 +74,6 @@ public class MyDataResource {
 			return result;
 		} catch (MyDataServiceException ex) {
 			throw new MyDataResourceException(MyDataConstants.SAVE_EROR, ex);
-
-		}
-	}
-
-	// having some question that need to be discuss on this api
-	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<?> updateMyData(@RequestBody MyData myData) {
-		try {
-			ResponseEntity<?> result = null;
-
-			Optional<List<ConstraintsViolationException>> error = validator.validateRequest(myData);
-			if (error.isPresent()) {
-				result = new ResponseEntity<Optional<List<ConstraintsViolationException>>>(error,
-						HttpStatus.BAD_REQUEST);
-			} else {
-				result = new ResponseEntity<>(myDataService.updateMyData(myData), HttpStatus.OK);
-			}
-			return result;
-		} catch (MyDataServiceException ex) {
-			throw new MyDataResourceException(MyDataConstants.UPDATE_EROR, ex);
 
 		}
 	}

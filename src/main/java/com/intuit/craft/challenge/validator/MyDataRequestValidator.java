@@ -17,9 +17,17 @@ public class MyDataRequestValidator {
 
 	public Optional<List<ConstraintsViolationException>> validateRequest(MyData myDataReq) {
 		List<ConstraintsViolationException> errorsList = new ArrayList<>();
+		idValidator(myDataReq, errorsList);
 		maxLengthValidator(myDataReq, errorsList);
 		return errorsList.size() > 0 ? Optional.of(errorsList) : Optional.empty();
 
+	}
+	
+	private void idValidator(MyData myDataReq, List<ConstraintsViolationException> errorsList) {
+		if(Objects.nonNull(myDataReq.getId())) {
+			errorsList.add(new ConstraintsViolationException.Builder().setField(MyDataConstants.ID)
+					.setMessage(MyDataConstants.NO_UPDATE_MSG).build());
+		}
 	}
 
 	private void maxLengthValidator(MyData myDataReq, List<ConstraintsViolationException> errorsList) {

@@ -25,9 +25,10 @@ public class MyDataServiceImpl implements MyDataService {
 
 	@Override
 	@Transactional
-	public Page<MyData> getMyData(Long timestamp, String key, String value, Pageable pageable) {
+	public Page<MyData> getMyData(Long startTimestamp, Long endTimestamp, String key, String value, Pageable pageable) {
 		try {
-			return myDataRepository.findByTimestampAndAttributesKeyAndAttributesValue(timestamp, key, value, pageable);
+			return myDataRepository.findByTimestampBetweenAndAttributesKeyAndAttributesValue(startTimestamp,
+					endTimestamp, key, value, pageable);
 		} catch (Exception ex) {
 			logger.log(Level.SEVERE, MyDataConstants.FETCH_EROR, ex);
 			throw new MyDataServiceException(MyDataConstants.FETCH_EROR);
@@ -44,16 +45,4 @@ public class MyDataServiceImpl implements MyDataService {
 			throw new MyDataServiceException(MyDataConstants.SAVE_EROR);
 		}
 	}
-
-	@Override
-	@Transactional
-	public MyData updateMyData(MyData myData) {
-		try {
-			return myDataRepository.save(myData);
-		} catch (Exception ex) {
-			logger.log(Level.SEVERE, MyDataConstants.UPDATE_EROR, ex);
-			throw new MyDataServiceException(MyDataConstants.UPDATE_EROR);
-		}
-	}
-
 }
