@@ -44,7 +44,7 @@ public class MyDataResource {
 	ResponseEntity<?> getMyData(@PathVariable("timestamp") Long timestamp, @PathVariable("key") String key,
 			@PathVariable("value") String value, @RequestParam(defaultValue = "0") int page) {
 		try {
-			Pageable pageable = PageRequest.of(page, 500);
+			Pageable pageable = PageRequest.of(page, MyDataConstants.PAGE_SIZE);
 			Page<MyData> data = myDataService.getMyData(timestamp, key, value, pageable);
 
 			if (CollectionUtils.isEmpty(data.getContent())) {

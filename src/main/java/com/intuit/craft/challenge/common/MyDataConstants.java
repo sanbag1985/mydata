@@ -11,4 +11,6 @@ public interface MyDataConstants {
 	static String MAX_LENGTH_MSG = "Max length is ";
 	static String KEY = "key";
 	static String VALUE = "value";
+	static int PAGE_SIZE = 500;
+
 }
