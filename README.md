@@ -2,9 +2,13 @@
 
 ## Database access
 url: http://localhost:8080/console/
+
 user:sa
+
 pwd:
+
 Database:H2
+
 
 
 ## API Contract (curls)
